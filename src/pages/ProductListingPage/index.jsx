@@ -69,7 +69,6 @@ const ProductListingPage = () => {
 
        <ResolutionInfo info={pageData.infoSection} />
         <RecommendationSection products={pageData.recommendations} />
-
       </main>
       <Footer />
     </>

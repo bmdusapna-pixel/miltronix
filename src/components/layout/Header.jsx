@@ -9,6 +9,7 @@ import locationIcon from '../../assets/Icon 2.svg';
 import searchIcon from '../../assets/Icon 3.svg';
 import dropdownIcon from '../../assets/Icon 4.svg';
 import wishlistIcon from '../../assets/icon 5.svg';
+import { Link } from "react-router-dom";
 
 function Header() {
   // State to manage which modal is visible
@@ -17,9 +18,15 @@ function Header() {
   return (
     <>
       <div className="fixed-top">
-        <section className="miltronix-banner d-flex justify-content-center align-items-center">
-          <img src={logoBanner} alt="Miltronix Logo" className="img-fluid miltronix-logo" />
-        </section>
+  <section className="miltronix-banner d-flex justify-content-center align-items-center">
+    <Link to="/">
+      <img
+        src={logoBanner}
+        alt="Miltronix Logo"
+        className="img-fluid miltronix-logo"
+      />
+    </Link>
+  </section>
         
         <div className="header-container bg-transparent d-flex justify-content-between align-items-center px-4 py-2">
           <a href="#" className="text-decoration-none see-more">

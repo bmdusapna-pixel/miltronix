@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import facebookIcon from '../../assets/icon 18.svg';
 import twitterIcon from '../../assets/icon 19.svg';
@@ -16,7 +17,7 @@ const Footer = () => {
             {/* Column 1: Logo, Description & Contact */}
             <div className="col-lg-4 col-md-12">
               <div>
-                <img src={logo} alt="Miltronix Logo" className="img-fluid footer-logo" />
+                <Link to="/"><img src={logo} alt="Miltronix Logo" className="img-fluid footer-logo" /></Link>
               </div>
               <p className="footer-desc hv">
                 Your trusted partner for premium electronics and cutting-edge technology. 
@@ -42,9 +43,9 @@ const Footer = () => {
             <div className="col-lg-2 col-md-6 col-6">
               <h5 className="footer-heading">Products</h5>
               <ul className="list-unstyled hv">
-                <li className="custom-margin"><a href="#">Laptops & Computers</a></li>
-                <li className="custom-margin"><a href="#">Smartphones & Tablets</a></li>
-                <li className="custom-margin"><a href="#">Audio & Headphones</a></li>
+                <li className="custom-margin"><Link to="/products/laptops">Laptops & Computers</Link></li>
+                <li className="custom-margin"><Link to="/products/smartphones">Smartphones & Tablets</Link></li>
+                <li className="custom-margin"><Link to="/products/audio">Audio & Headphones</Link></li>
               </ul>
             </div>
 
@@ -52,9 +53,9 @@ const Footer = () => {
             <div className="col-lg-2 col-md-6 col-6">
               <h5 className="footer-heading">Support</h5>
               <ul className="list-unstyled hv">
-                <li className="custom-margin"><a href="#">Help Center</a></li>
-                <li className="custom-margin"><a href="#">Contact Us</a></li>
-                <li className="custom-margin"><a href="#">Return Policy</a></li>
+                <li className="custom-margin"><Link to="/support/help-center">Help Center</Link></li>
+                <li className="custom-margin"><Link to="/support/contact-us">Contact Us</Link></li>
+                <li className="custom-margin"><Link to="/support/return-policy">Return Policy</Link></li>
               </ul>
             </div>
 
@@ -62,9 +63,9 @@ const Footer = () => {
             <div className="col-lg-2 col-md-6 col-6">
               <h5 className="footer-heading">Company</h5>
               <ul className="list-unstyled hv">
-                <li className="custom-margin"><a href="#">About Us</a></li>
-                <li className="custom-margin"><a href="#">Careers</a></li>
-                <li className="custom-margin"><a href="#">Press</a></li>
+                <li className="custom-margin"><Link to="/about-us">About Us</Link></li>
+                <li className="custom-margin"><Link to="/careers">Careers</Link></li>
+                <li className="custom-margin"><Link to="/press">Press</Link></li>
               </ul>
             </div>
 
@@ -72,9 +73,9 @@ const Footer = () => {
             <div className="col-lg-2 col-md-6 col-6">
               <h5 className="footer-heading">Account</h5>
               <ul className="list-unstyled hv">
-                <li className="custom-margin"><a href="#">My Account</a></li>
-                <li className="custom-margin"><a href="#">Order History</a></li>
-                <li className="custom-margin"><a href="#">Wishlist</a></li>
+                <li className="custom-margin"><Link to="/account">My Account</Link></li>
+                <li className="custom-margin"><Link to="/orders">Order History</Link></li>
+                <li className="custom-margin"><Link to="/wishlist">Wishlist</Link></li>
               </ul>
             </div>
 
@@ -102,9 +103,9 @@ const Footer = () => {
           <p className="mb-2 mb-sm-0 bottom-text text-sm-start text-center">
             © 2025 Miltronix. All rights reserved.
             <span className="d-none d-sm-inline"> | </span>
-            <a href="#" className="bottom-link">Privacy Policy</a>
+            <a href="/privacy-policy" className="bottom-link">Privacy Policy</a>
             <span className="d-none d-sm-inline"> | </span>
-            <a href="#" className="bottom-link">Terms of Service</a>
+            <a href="/terms-of-service" className="bottom-link">Terms of Service</a>
           </p>
           <div className="d-flex align-items-center gap-2">
             <span className="small">Follow us:</span>
