@@ -9,6 +9,14 @@ import MyOrdersPage from './pages/MyOrdersPage';
 import WishlistPage from './pages/WishlistPage';
 import SavedAddressPage from './pages/SavedAddressPage';
 import PaymentPage from './pages/PaymentPage';
+import CareerPage from './pages/careerpage';
+import PressPage from './pages/presspage';
+import PartnersPage from './pages/patnerspage';
+import InvestorRelationsPage from './pages/InvestorRelationsPage';
+import CorporateSalesPage from './pages/CorporateSalesPage';
+import HelpSupportPage from './pages/HelpSupportPage';
+import ContactUsPage from './pages/ContactUsPage';
+
 
 function App() {
   return (
@@ -23,6 +31,14 @@ function App() {
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/addresses" element={<SavedAddressPage />} />
           <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/careers" element={<CareerPage />} />
+          <Route path="/press" element={<PressPage />} />
+          <Route path="/partners" element={<PartnersPage />} />
+          <Route path="/investor-relations" element={<InvestorRelationsPage />} />
+          <Route path="/corporate-sales" element={<CorporateSalesPage />} />
+          <Route path="/help-support" element={<HelpSupportPage />} />
+          <Route path="/contact-us" element={<ContactUsPage />} />
+         
       </Routes>
     </Router>
   )

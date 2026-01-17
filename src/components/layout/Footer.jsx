@@ -46,6 +46,9 @@ const Footer = () => {
                 <li className="custom-margin"><Link to="/products/laptops">Laptops & Computers</Link></li>
                 <li className="custom-margin"><Link to="/products/smartphones">Smartphones & Tablets</Link></li>
                 <li className="custom-margin"><Link to="/products/audio">Audio & Headphones</Link></li>
+                <li className="custom-margin"><Link to="/products/gaming">Gaming & Accessories</Link></li>
+                <li className="custom-margin"><Link to="/products/smart-home">Smart Home</Link></li>
+                <li className="custom-margin"><Link to="/products/wearable">Wearable Tech</Link></li>
               </ul>
             </div>
 
@@ -53,9 +56,12 @@ const Footer = () => {
             <div className="col-lg-2 col-md-6 col-6">
               <h5 className="footer-heading">Support</h5>
               <ul className="list-unstyled hv">
-                <li className="custom-margin"><Link to="/support/help-center">Help Center</Link></li>
-                <li className="custom-margin"><Link to="/support/contact-us">Contact Us</Link></li>
+                <li className="custom-margin"><Link to="help-support">Help Center</Link></li>
+                <li className="custom-margin"><Link to="contact-us">Contact Us</Link></li>
+                <li className="custom-margin"><Link to="/support/warranty-claims">Warranty Claims</Link></li>
                 <li className="custom-margin"><Link to="/support/return-policy">Return Policy</Link></li>
+                <li className="custom-margin"><Link to="/support/shipping-info">Shipping Info</Link></li>
+                <li className="custom-margin"><Link to="/support/track-order">Track Order</Link></li>
               </ul>
             </div>
 
@@ -66,6 +72,9 @@ const Footer = () => {
                 <li className="custom-margin"><Link to="/about-us">About Us</Link></li>
                 <li className="custom-margin"><Link to="/careers">Careers</Link></li>
                 <li className="custom-margin"><Link to="/press">Press</Link></li>
+                <li className="custom-margin"><Link to="/partners">Partners</Link></li>
+                <li className="custom-margin"><Link to="/investor-relations">Investor Relations</Link></li>
+                <li className="custom-margin"><Link to="/corporate-sales">Corporate Sales</Link></li>
               </ul>
             </div>
 
@@ -73,12 +82,14 @@ const Footer = () => {
             <div className="col-lg-2 col-md-6 col-6">
               <h5 className="footer-heading">Account</h5>
               <ul className="list-unstyled hv">
-                <li className="custom-margin"><Link to="/account">My Account</Link></li>
-                <li className="custom-margin"><Link to="/orders">Order History</Link></li>
+                <li className="custom-margin"><Link to="/my-profile">My Account</Link></li>
+                <li className="custom-margin"><Link to="/my-orders">Order History</Link></li>
                 <li className="custom-margin"><Link to="/wishlist">Wishlist</Link></li>
+                <li className="custom-margin"><Link to="/rewards-program">Rewards Program</Link></li>
+                <li className="custom-margin"><Link to="/gift-cards">Gift Cards</Link></li>
+                <li className="custom-margin"><Link to="/newsletter">Newsletter</Link></li>
               </ul>
             </div>
-
           </div>
         </div>
       </footer>
@@ -103,9 +114,9 @@ const Footer = () => {
           <p className="mb-2 mb-sm-0 bottom-text text-sm-start text-center">
             © 2025 Miltronix. All rights reserved.
             <span className="d-none d-sm-inline"> | </span>
-            <a href="/privacy-policy" className="bottom-link">Privacy Policy</a>
+            <Link to="/privacy-policy" className="bottom-link">Privacy Policy</Link>
             <span className="d-none d-sm-inline"> | </span>
-            <a href="/terms-of-service" className="bottom-link">Terms of Service</a>
+            <Link to="/terms-of-service" className="bottom-link">Terms of Service</Link>
           </p>
           <div className="d-flex align-items-center gap-2">
             <span className="small">Follow us:</span>

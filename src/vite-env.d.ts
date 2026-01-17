@@ -3,7 +3,7 @@
 interface ImportMetaEnv {
   readonly VITE_PUBLIC_BUILDER_KEY: string;
   readonly VITE_BASE_URL: string;
-  // Add other VITE_ variables here if needed
+  // add more variables here if needed
 }
 
 interface ImportMeta {

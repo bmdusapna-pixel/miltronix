@@ -77,6 +77,147 @@ export const featuredProducts = [
   },
 ];
 
+export const careerCards = [
+  {
+    title: "Software Developer",
+    description: "Work on modern web technologies and scalable applications.",
+    icon: "bi bi-code-slash",
+  },
+  {
+    title: "UI/UX Designer",
+    description: "Design intuitive and engaging user experiences.",
+    icon: "bi bi-palette",
+  },
+  {
+    title: "Sales Executive",
+    description: "Build strong client relationships and drive business growth.",
+    icon: "bi bi-briefcase",
+  },
+];
+
+export const pressCards = [
+  {
+    title: "Company News",
+    description:
+      "Read about the latest updates, achievements, and announcements from Mitronix.",
+    icon: "bi bi-newspaper",
+  },
+  {
+    title: "Press Releases",
+    description:
+      "Official press releases covering product launches, partnerships, and milestones.",
+    icon: "bi bi-megaphone",
+  },
+  {
+    title: "Media Coverage",
+    description:
+      "Explore how Mitronix is featured across leading media platforms worldwide.",
+    icon: "bi bi-camera-video",
+  },
+];
+export const partnerCards = [
+  {
+    title: "Technology Partners",
+    description:
+      "Working with leading technology providers to build scalable and reliable solutions.",
+    icon: "bi bi-cpu",
+  },
+  {
+    title: "Channel Partners",
+    description:
+      "Expanding our market presence through trusted distributors and resellers.",
+    icon: "bi bi-diagram-3",
+  },
+  {
+    title: "Strategic Alliances",
+    description:
+      "Forming long-term alliances to drive innovation and mutual growth.",
+    icon: "bi bi-people",
+  },
+];
+
+export const investorCards = [
+  {
+    title: "Financial Highlights",
+    description:
+      "Key financial metrics, performance insights, and growth indicators.",
+    icon: "bi bi-graph-up-arrow",
+  },
+  {
+    title: "Annual Reports",
+    description:
+      "Access annual reports, disclosures, and financial statements.",
+    icon: "bi bi-file-earmark-text",
+  },
+  {
+    title: "Corporate Governance",
+    description:
+      "Our commitment to ethical practices and transparent governance.",
+    icon: "bi bi-shield-check",
+  },
+];
+export const corporateSalesCards = [
+  {
+    title: "Enterprise Solutions",
+    description:
+      "Customized technology solutions tailored for large enterprises.",
+    icon: "bi bi-buildings",
+  },
+  {
+    title: "Bulk Procurement",
+    description:
+      "Cost-effective bulk purchasing options with assured quality.",
+    icon: "bi bi-box-seam",
+  },
+  {
+    title: "Dedicated Support",
+    description:
+      "Priority assistance and long-term support for corporate clients.",
+    icon: "bi bi-headset",
+  },
+];
+
+export const helpSupportCards = [
+  {
+    title: "Customer Support",
+    description:
+      "Get assistance with product usage, installation, and general inquiries.",
+    icon: "bi bi-person-check",
+  },
+  {
+    title: "Technical Assistance",
+    description:
+      "Expert help for troubleshooting, diagnostics, and technical issues.",
+    icon: "bi bi-tools",
+  },
+  {
+    title: "Warranty & Service",
+    description:
+      "Information on warranties, repairs, and after-sales service support.",
+    icon: "bi bi-shield-check",
+  },
+];
+export const contactCards = [
+  {
+    title: "Sales Enquiry",
+    description:
+      "Connect with our sales team for product details, pricing, and corporate solutions.",
+    icon: "bi bi-telephone-outbound",
+  },
+  {
+    title: "Customer Support",
+    description:
+      "Need help with products or services? Our support team is here to assist you.",
+    icon: "bi bi-headset",
+  },
+  {
+    title: "Visit Our Office",
+    description:
+      "Reach our corporate office for meetings, partnerships, and business discussions.",
+    icon: "bi bi-geo-alt",
+  },
+];
+
 export const aboutCards = [
   {
     title: "Corporate\nOffice",

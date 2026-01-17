@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
-import { login, signup } from "../../api/api";
+import { login, signup, loginWithGoogle } from "../../api/api";
+import googleIcon from "../../assets/Google-Logo-Icon-PNG-Photo.png";
 
 function AuthModals({ modalToShow, setModalToShow }) {
   const handleClose = () => setModalToShow(null);
@@ -15,56 +16,72 @@ function AuthModals({ modalToShow, setModalToShow }) {
     setModalToShow("signup");
   };
 
-  // =================== STATE ===================
+  // ---------------- SIGNUP ----------------
   const [signupData, setSignupData] = useState({
     name: "",
     email: "",
+    mobile: "",
     password: "",
     confirmPassword: "",
   });
 
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
-
-  // =================== HANDLERS ===================
-  const handleSignupChange = (e) => {
+  const handleSignupChange = (e) =>
     setSignupData({ ...signupData, [e.target.name]: e.target.value });
-  };
-
-  const handleLoginChange = (e) => {
-    setLoginData({ ...loginData, [e.target.name]: e.target.value });
-  };
 
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
     if (signupData.password !== signupData.confirmPassword) {
-      alert("Passwords do not match!");
+      alert("Passwords do not match");
       return;
     }
     try {
-      const res = await signup({
-        name: signupData.name,
-        email: signupData.email,
-        password: signupData.password,
-      });
-      console.log("Signup success:", res);
+      await signup(signupData);
+      alert("Signup successful");
       handleClose();
     } catch (err) {
-      alert(err.message || "Signup failed");
+      alert(err.response?.data?.message || "Signup failed");
     }
   };
+
+  // ---------------- LOGIN ----------------
+  const [loginData, setLoginData] = useState({
+    identifier: "",
+    password: "",
+  });
+
+  const handleLoginChange = (e) =>
+    setLoginData({ ...loginData, [e.target.name]: e.target.value });
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await login(loginData);
-      console.log("Login success:", res);
+      await login(loginData);
+      alert("Login successful");
       handleClose();
     } catch (err) {
-      alert(err.message || "Login failed");
+      alert(err.response?.data?.message || "Login failed");
     }
+  };
+
+  // ---------------- GOOGLE LOGIN ----------------
+  const handleGoogleLoginClick = async () => {
+    try {
+      await loginWithGoogle();
+      alert("Google login successful");
+      handleClose();
+    } catch (err) {
+      alert(err.response?.data?.message || "Google login failed");
+    }
+  };
+
+  const googleBtnStyle = {
+    padding: "14px 0",
+    fontSize: "16px",
+    borderRadius: "8px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "12px",
   };
 
   return (
@@ -74,77 +91,83 @@ function AuthModals({ modalToShow, setModalToShow }) {
         show={modalToShow === "signup"}
         onHide={handleClose}
         centered
-        size="lg"
+        dialogClassName="auth-modal-dialog"
       >
-        <Modal.Header closeButton className="border-0 pb-0">
-          <Modal.Title as="h3" className="fw-bold">
-            Create Account
-          </Modal.Title>
-        </Modal.Header>
+        <Modal.Body className="p-4 p-md-5">
+          <h2 className="fw-bold text-center mb-2">Create Account</h2>
+          <p className="text-muted text-center mb-4">
+            Join Mitronix and explore more
+          </p>
 
-        <Modal.Body className="px-4 pb-4">
           <form onSubmit={handleSignupSubmit}>
-            <div className="mb-3">
-              <label className="form-label fw-semibold">Full Name</label>
-              <input
-                type="text"
-                name="name"
-                className="form-control form-control-lg rounded-3"
-                placeholder="John Doe"
-                value={signupData.name}
-                onChange={handleSignupChange}
-              />
-            </div>
+            <input
+              type="text"
+              name="name"
+              className="form-control mb-3"
+              placeholder="Full Name"
+              value={signupData.name}
+              onChange={handleSignupChange}
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              className="form-control mb-3"
+              placeholder="Email Address"
+              value={signupData.email}
+              onChange={handleSignupChange}
+              required
+            />
+            <input
+              type="text"
+              name="mobile"
+              className="form-control mb-3"
+              placeholder="Mobile Number"
+              value={signupData.mobile}
+              onChange={handleSignupChange}
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              className="form-control mb-3"
+              placeholder="Password"
+              value={signupData.password}
+              onChange={handleSignupChange}
+              required
+            />
+            <input
+              type="password"
+              name="confirmPassword"
+              className="form-control mb-4"
+              placeholder="Confirm Password"
+              value={signupData.confirmPassword}
+              onChange={handleSignupChange}
+              required
+            />
 
-            <div className="mb-3">
-              <label className="form-label fw-semibold">Email</label>
-              <input
-                type="email"
-                name="email"
-                className="form-control form-control-lg rounded-3"
-                placeholder="john@email.com"
-                value={signupData.email}
-                onChange={handleSignupChange}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label fw-semibold">Password</label>
-              <input
-                type="password"
-                name="password"
-                className="form-control form-control-lg rounded-3"
-                placeholder="••••••••"
-                value={signupData.password}
-                onChange={handleSignupChange}
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="form-label fw-semibold">Confirm Password</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                className="form-control form-control-lg rounded-3"
-                placeholder="••••••••"
-                value={signupData.confirmPassword}
-                onChange={handleSignupChange}
-              />
-            </div>
-
+            {/* Google Login */}
             <button
-              type="submit"
-              className="btn btn-dark btn-lg w-100 rounded-3"
+              type="button"
+              className="btn btn-outline-dark w-100 mb-3"
+              style={googleBtnStyle}
+              onClick={handleGoogleLoginClick}
             >
-              Sign Up
+              <img src={googleIcon} alt="Google" style={{ width: 28, height: 28 }} />
+              Continue with Google
             </button>
+
+            <button className="btn btn-dark w-100 py-2">Sign Up</button>
           </form>
 
-          <p className="text-center mt-4 mb-0 text-muted">
+          <p className="text-center mt-4 mb-0">
             Already have an account?{" "}
-            <a href="#" onClick={switchToLogin} className="fw-semibold">
+            <span
+              className="fw-semibold text-decoration-underline cursor-pointer"
+              onClick={switchToLogin}
+            >
               Login
-            </a>
+            </span>
           </p>
         </Modal.Body>
       </Modal>
@@ -154,53 +177,54 @@ function AuthModals({ modalToShow, setModalToShow }) {
         show={modalToShow === "login"}
         onHide={handleClose}
         centered
-        size="lg"
+        dialogClassName="auth-modal-dialog"
       >
-        <Modal.Header closeButton className="border-0 pb-0">
-          <Modal.Title as="h3" className="fw-bold">
-            Welcome Back
-          </Modal.Title>
-        </Modal.Header>
+        <Modal.Body className="p-4 p-md-5">
+          <h2 className="fw-bold text-center mb-2">Welcome Back</h2>
+          <p className="text-muted text-center mb-4">Login to continue</p>
 
-        <Modal.Body className="px-4 pb-4">
           <form onSubmit={handleLoginSubmit}>
-            <div className="mb-3">
-              <label className="form-label fw-semibold">Email</label>
-              <input
-                type="email"
-                name="email"
-                className="form-control form-control-lg rounded-3"
-                placeholder="john@email.com"
-                value={loginData.email}
-                onChange={handleLoginChange}
-              />
-            </div>
+            <input
+              type="text"
+              name="identifier"
+              className="form-control mb-3"
+              placeholder="Email or Mobile Number"
+              value={loginData.identifier}
+              onChange={handleLoginChange}
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              className="form-control mb-4"
+              placeholder="Password"
+              value={loginData.password}
+              onChange={handleLoginChange}
+              required
+            />
 
-            <div className="mb-4">
-              <label className="form-label fw-semibold">Password</label>
-              <input
-                type="password"
-                name="password"
-                className="form-control form-control-lg rounded-3"
-                placeholder="••••••••"
-                value={loginData.password}
-                onChange={handleLoginChange}
-              />
-            </div>
-
+            {/* Google Login */}
             <button
-              type="submit"
-              className="btn btn-dark btn-lg w-100 rounded-3"
+              type="button"
+              className="btn btn-outline-dark w-100 mb-3"
+              style={googleBtnStyle}
+              onClick={handleGoogleLoginClick}
             >
-              Login
+              <img src={googleIcon} alt="Google" style={{ width: 28, height: 28 }} />
+              Continue with Google
             </button>
+
+            <button className="btn btn-dark w-100 py-2">Login</button>
           </form>
 
-          <p className="text-center mt-4 mb-0 text-muted">
+          <p className="text-center mt-4 mb-0">
             Don’t have an account?{" "}
-            <a href="#" onClick={switchToSignup} className="fw-semibold">
+            <span
+              className="fw-semibold text-decoration-underline cursor-pointer"
+              onClick={switchToSignup}
+            >
               Sign Up
-            </a>
+            </span>
           </p>
         </Modal.Body>
       </Modal>

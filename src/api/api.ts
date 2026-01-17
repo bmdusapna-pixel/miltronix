@@ -1,42 +1,43 @@
-// src/api/api.ts
-export const BASE_URL = import.meta.env.VITE_BASE_URL;
+import axios from "axios";
 
-// Type for request options
-interface ApiOptions extends RequestInit {
-  headers?: Record<string, string>;
+// Base URL
+const API = axios.create({
+  baseURL: "http://localhost:3000/api/auth",
+  headers: { "Content-Type": "application/json" },
+});
+
+// ---------------- SIGNUP ----------------
+interface SignupData {
+  name: string;
+  email: string;
+  mobile: string;
+  password: string;
 }
 
-// Generic API request function
-export const apiRequest = async (endpoint: string, options: ApiOptions = {}) => {
-  const url = `${BASE_URL}${endpoint}`;
-
-  const response = await fetch(url, {
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-    ...options,
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || "API request failed");
-  }
-
-  return response.json();
+export const signup = async (data: SignupData) => {
+  const res = await API.post("/signup", data);
+  return res.data;
 };
 
-// ===================== Auth Functions =====================
-export const login = async (data: { email: string; password: string }) => {
-  return apiRequest("/auth/login", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+// ---------------- LOGIN ----------------
+interface LoginData {
+  identifier: string; // email or mobile
+  password: string;
+}
+
+export const login = async (data: LoginData) => {
+  const res = await API.post("/login", data);
+  return res.data;
 };
 
-export const signup = async (data: { name: string; email: string; password: string }) => {
-  return apiRequest("/auth/signup", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+// ---------------- RESET PASSWORD ----------------
+export const resetPassword = async (email: string) => {
+  const res = await API.post("/reset-password", { email });
+  return res.data;
+};
+
+// ---------------- GOOGLE LOGIN ----------------
+export const loginWithGoogle = async () => {
+  const res = await API.get("/google-login"); // adjust endpoint if needed
+  return res.data;
 };
