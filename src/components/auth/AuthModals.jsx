@@ -35,8 +35,8 @@ function AuthModals({ modalToShow, setModalToShow }) {
       return;
     }
     try {
-      await signup(signupData);
-      alert("Signup successful");
+      const res = await signup(signupData);
+      alert(res.message || "Signup successful");
       handleClose();
     } catch (err) {
       alert(err.response?.data?.message || "Signup failed");
@@ -55,8 +55,9 @@ function AuthModals({ modalToShow, setModalToShow }) {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(loginData);
-      alert("Login successful");
+      const res = await login(loginData);
+      if (res.token) localStorage.setItem("token", res.token);
+      alert(res.message || "Login successful");
       handleClose();
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
@@ -64,14 +65,9 @@ function AuthModals({ modalToShow, setModalToShow }) {
   };
 
   // ---------------- GOOGLE LOGIN ----------------
-  const handleGoogleLoginClick = async () => {
-    try {
-      await loginWithGoogle();
-      alert("Google login successful");
-      handleClose();
-    } catch (err) {
-      alert(err.response?.data?.message || "Google login failed");
-    }
+  const handleGoogleLoginClick = () => {
+    // Redirect to backend for OAuth
+    window.location.href = "http://localhost:3000/api/auth/google-login";
   };
 
   const googleBtnStyle = {
@@ -146,7 +142,6 @@ function AuthModals({ modalToShow, setModalToShow }) {
               required
             />
 
-            {/* Google Login */}
             <button
               type="button"
               className="btn btn-outline-dark w-100 mb-3"
@@ -203,7 +198,6 @@ function AuthModals({ modalToShow, setModalToShow }) {
               required
             />
 
-            {/* Google Login */}
             <button
               type="button"
               className="btn btn-outline-dark w-100 mb-3"

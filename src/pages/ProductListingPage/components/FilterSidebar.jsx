@@ -1,73 +1,95 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const FilterSidebar = ({ options, filters, setFilters }) => {
-  
-  const handleCheckboxChange = (filterType, value) => {
-    const currentValues = filters[filterType] || [];
-    const newValues = currentValues.includes(value)
-      ? currentValues.filter(item => item !== value)
-      : [...currentValues, value];
-    
-    setFilters(prevFilters => ({
-      ...prevFilters,
-      [filterType]: newValues
-    }));
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+const FilterSidebar = ({ categoryId, filters, setFilters, setProducts }) => {
+  const [options, setOptions] = useState(null);
+
+  useEffect(() => {
+    const fetchFilterOptions = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/category/${categoryId}/filters`);
+        setOptions(res.data);
+      } catch (err) {
+        console.error('Failed to fetch filter options:', err);
+      }
+    };
+    if (categoryId) fetchFilterOptions();
+  }, [categoryId]);
+
+  const applyFilters = async (updatedFilters) => {
+    setFilters(updatedFilters);
+    try {
+      const query = new URLSearchParams();
+      if (updatedFilters.price) query.append('price', updatedFilters.price);
+      if (updatedFilters.resolution?.length) query.append('resolution', updatedFilters.resolution.join(','));
+      if (updatedFilters.screenSize?.length) query.append('screenSize', updatedFilters.screenSize.join(','));
+      if (updatedFilters.includeOutOfStock) query.append('includeOutOfStock', true);
+
+      const res = await axios.get(`${BASE_URL}/products?category=${categoryId}&${query.toString()}`);
+      setProducts(res.data);
+    } catch (err) {
+      console.error('Failed to fetch filtered products:', err);
+    }
   };
 
-  const handlePriceChange = (event) => {
-    setFilters({ ...filters, price: parseInt(event.target.value) });
+  const handleCheckboxChange = (type, value) => {
+    const current = filters[type] || [];
+    const updated = current.includes(value) ? current.filter(v => v !== value) : [...current, value];
+    applyFilters({ ...filters, [type]: updated });
   };
 
-  // Add a guard clause for safety
-  if (!options) {
-      return <div>Loading filters...</div>
-  }
+  const handlePriceChange = (value) => {
+    applyFilters({ ...filters, price: value });
+  };
+
+  if (!options) return <div>Loading filters...</div>;
 
   return (
     <div className="filter-card p-4">
       <h4 className="filter-title mb-4 ff2">Filter</h4>
-      
-      {Object.keys(options).map(filterKey => {
-        const filter = options[filterKey];
-
-        // If the current filter is 'price', render the slider and RETURN.
-        // This prevents it from falling through to the checkbox code below.
-        if (filterKey === 'price') {
+      {Object.keys(options).map((key) => {
+        const filter = options[key];
+        if (key === 'price') {
           return (
-            <React.Fragment key="price-filter">
-              <div className="mb-4">
-                <h6 className="filter-subtitle hv">Price</h6>
-                <input type="range" className="form-range" min={filter.min} max={filter.max} value={filters.price} onChange={handlePriceChange} />
-                <div className="d-flex justify-content-between price-labels">
-                  <span>₹{filter.min.toLocaleString()}</span>
-                  <span>₹{filters.price.toLocaleString()}</span>
-                </div>
+            <div key="price-filter" className="mb-4">
+              <h6 className="filter-subtitle hv">Price</h6>
+              <input
+                type="range"
+                min={filter.min}
+                max={filter.max}
+                value={filters.price}
+                onChange={(e) => handlePriceChange(Number(e.target.value))}
+                className="form-range"
+              />
+              <div className="d-flex justify-content-between">
+                <span>₹{filter.min.toLocaleString()}</span>
+                <span>₹{filters.price.toLocaleString()}</span>
               </div>
               <hr />
-            </React.Fragment>
+            </div>
           );
         }
-
-        // This code will now only run for non-price filters that have an 'items' array.
         return (
-          <React.Fragment key={filterKey}>
-            <div className="mb-4">
-              <h6 className="filter-subtitle hv">{filter.title}</h6>
-              {filter.items.map(item => (
-                <div className="form-check" key={item.id}>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id={item.id}
-                    checked={filters[filterKey]?.includes(item.label) || false}
-                    onChange={() => handleCheckboxChange(filterKey, item.label)}
-                  />
-                  <label className="form-check-label hv" htmlFor={item.id}>{item.label}</label>
-                </div>
-              ))}
-            </div>
+          <div key={key} className="mb-4">
+            <h6 className="filter-subtitle hv">{filter.title}</h6>
+            {filter.items.map((item) => (
+              <div className="form-check" key={item.id}>
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id={item.id}
+                  checked={filters[key]?.includes(item.label) || false}
+                  onChange={() => handleCheckboxChange(key, item.label)}
+                />
+                <label className="form-check-label hv" htmlFor={item.id}>
+                  {item.label}
+                </label>
+              </div>
+            ))}
             <hr />
-          </React.Fragment>
+          </div>
         );
       })}
     </div>
