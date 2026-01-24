@@ -24,23 +24,27 @@ function ProductCard({ product, onCartUpdate }) {
     : `${BACKEND_URL}/images/placeholder.png`;
 
   const handleAddToCart = async () => {
+    if (!product._id) return alert("Product ID not found");
+
     setLoading(true);
     try {
+      // ✅ Send only what backend expects
       await addItemToCart({
-        productId: product.id,
+        productId: product._id,
         quantity: 1,
-        price: product.price,
+        variant: {}, // optionally you can send color/size here
       });
+
       setAdded(true);
 
-      // Update parent cart state if callback provided
+      // Refresh cart in parent component
       if (onCartUpdate) {
         const updatedCart = await getCartItems();
-        onCartUpdate(updatedCart);
+        onCartUpdate(updatedCart.items || []);
       }
     } catch (err) {
       console.error("Failed to add to cart:", err);
-      alert("Failed to add to cart");
+      alert(err?.response?.data?.message || "Failed to add item to cart");
     } finally {
       setLoading(false);
     }
@@ -73,7 +77,7 @@ function ProductCard({ product, onCartUpdate }) {
             {[...Array(emptyStars)].map((_, i) => (
               <img key={`empty-${i}`} src={starEmpty} alt="star" className="star" />
             ))}
-            <span> {rating} ({product.reviews || 0})</span>
+            <span> {rating.toFixed(1)} ({product.reviews || 0})</span>
           </div>
         </div>
 

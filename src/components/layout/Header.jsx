@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import AuthModals from '../auth/AuthModals';
+import { Link } from "react-router-dom";
 
-// Assume you have these assets in src/assets/icons/ and src/assets/images/
+// Assets
 import logoBanner from '../../assets/MILTRONIX APP DESIGN 3.png';
 import cartIcon from '../../assets/SVG.svg';
 import userIcon from '../../assets/Icon 6.svg';
@@ -9,32 +10,34 @@ import locationIcon from '../../assets/Icon 2.svg';
 import searchIcon from '../../assets/Icon 3.svg';
 import dropdownIcon from '../../assets/Icon 4.svg';
 import wishlistIcon from '../../assets/icon 5.svg';
-import { Link } from "react-router-dom";
 
 function Header() {
-  // State to manage which modal is visible
   const [modalToShow, setModalToShow] = useState(null); // 'login', 'signup', or null
 
   return (
     <>
       <div className="fixed-top">
-  <section className="miltronix-banner d-flex justify-content-center align-items-center">
-    <Link to="/">
-      <img
-        src={logoBanner}
-        alt="Miltronix Logo"
-        className="img-fluid miltronix-logo"
-      />
-    </Link>
-  </section>
+        {/* Logo Section */}
+        <section className="miltronix-banner d-flex justify-content-center align-items-center">
+          <Link to="/">
+            <img
+              src={logoBanner}
+              alt="Miltronix Logo"
+              className="img-fluid miltronix-logo"
+            />
+          </Link>
+        </section>
         
+        {/* Header Container */}
         <div className="header-container bg-transparent d-flex justify-content-between align-items-center px-4 py-2">
-          <a href="#" className="text-decoration-none see-more">
+          
+          {/* Cart Button */}
+          <Link to="/cart" className="text-decoration-none see-more">
             <div className="cart-box d-flex align-items-center justify-content-center">
               <img src={cartIcon} alt="Cart" className="me-lg-2" width="16" height="16" />
               <span className="d-none d-lg-block">Cart</span>
             </div>
-          </a>
+          </Link>
 
           {/* Search Bar */}
           <div
@@ -58,12 +61,12 @@ function Header() {
             </span>
           </div>
 
-          {/* wishlist */}
-
-          <div className="wishlist-box overflow-hidden mx-l-5 mx-1" link="#" style={{ cursor: 'pointer' }}>
+          {/* Wishlist */}
+          <div className="wishlist-box overflow-hidden mx-l-5 mx-1" style={{ cursor: 'pointer' }}>
             <img src={wishlistIcon} alt="Wishlist" className="img-fluid w-100 h-100 object-fit-cover" />
           </div>
 
+          {/* Signup / User Icon */}
           <div
             className="signup-box d-flex align-items-center justify-content-center"
             onClick={() => setModalToShow('signup')}
@@ -75,6 +78,7 @@ function Header() {
         </div>
       </div>
 
+      {/* Auth Modals */}
       <AuthModals
         modalToShow={modalToShow}
         setModalToShow={setModalToShow}

@@ -1,9 +1,10 @@
+// src/components/ui/ShopCard.jsx
 import React, { useState } from "react";
 import { addItemToCart, getCartItems } from "../../api/api";
 
 const BACKEND_URL = "http://localhost:3000";
-
 const starIconFull = "/assets/icon7.svg";
+const starIconHalf = "/assets/icon9.svg"; 
 const starIconEmpty = "/assets/icon8.svg";
 
 const ShopCard = ({ product, onCartUpdate }) => {
@@ -12,36 +13,39 @@ const ShopCard = ({ product, onCartUpdate }) => {
 
   if (!product) return null;
 
-  const rating = product.rating || 0;
+  const rating = Math.min(5, product.rating || 0);
   const fullStars = Math.floor(rating);
-  const emptyStars = 5 - fullStars;
+  const halfStar = rating - fullStars >= 0.5;
+  const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
-  // ✅ Image URL fallback
   const imageUrl = product.image
     ? `${BACKEND_URL}${product.image}`
     : `${BACKEND_URL}/images/placeholder.png`;
 
+  const handleImageError = (e) => {
+    e.currentTarget.src = `${BACKEND_URL}/images/placeholder.png`;
+  };
+
   const categoryName = product.category || product.categoryKey || "";
   const saveAmount = product.saveAmount ? Number(product.saveAmount) : null;
 
-  // ---------------- Add to Cart ----------------
   const handleAddToCart = async () => {
+    if (!product._id) return alert("Product ID not found");
+
     setLoading(true);
     try {
       await addItemToCart({
-        productId: product.id,
+        productId: product._id,
         quantity: 1,
-        price: product.price,
+        variant: {},
       });
+
       setAdded(true);
 
-      // Fetch updated cart
-      const updatedCart = await getCartItems();
-
-      // Call optional callback if parent wants to update cart UI
-      if (onCartUpdate) onCartUpdate(updatedCart);
-
-      console.log("Cart updated:", updatedCart);
+      if (onCartUpdate) {
+        const updatedCart = await getCartItems();
+        onCartUpdate(updatedCart);
+      }
     } catch (error) {
       console.error("Failed to add to cart:", error);
       alert("Failed to add item to cart");
@@ -58,20 +62,17 @@ const ShopCard = ({ product, onCartUpdate }) => {
             Save ₹{saveAmount.toLocaleString()}
           </span>
         )}
-
         <img
           src={imageUrl}
           alt={product.title || "Product"}
           className="img-fluid shop-card-img"
+          onError={handleImageError}
         />
-
         <h6 className="product-category2">{categoryName}</h6>
         <h5 className="product-title2">{product.title || "Product"}</h5>
-
         <p className="product-price2">
           ₹{product.price?.toLocaleString() || 0}
         </p>
-
         {product.oldPrice && (
           <p className="product-old-price2">
             ₹{product.oldPrice.toLocaleString()}
@@ -82,10 +83,11 @@ const ShopCard = ({ product, onCartUpdate }) => {
           {[...Array(fullStars)].map((_, i) => (
             <img key={`full-${i}`} src={starIconFull} alt="star" className="star1" />
           ))}
+          {halfStar && <img src={starIconHalf} alt="half-star" className="star1" />}
           {[...Array(emptyStars)].map((_, i) => (
             <img key={`empty-${i}`} src={starIconEmpty} alt="star" className="star1" />
           ))}
-          <span>{rating} ({product.reviews || 0})</span>
+          <span>{rating.toFixed(1)} ({product.reviews || 0})</span>
         </div>
 
         <div className="d-flex justify-content-between mt-2">

@@ -16,6 +16,7 @@ import InvestorRelationsPage from './pages/InvestorRelationsPage';
 import CorporateSalesPage from './pages/CorporateSalesPage';
 import HelpSupportPage from './pages/HelpSupportPage';
 import ContactUsPage from './pages/ContactUsPage';
+import CartPage from './pages/cartpage';
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
           <Route path="/corporate-sales" element={<CorporateSalesPage />} />
           <Route path="/help-support" element={<HelpSupportPage />} />
           <Route path="/contact-us" element={<ContactUsPage />} />
+          <Route path="/cart" element={<CartPage />} />
          
       </Routes>
     </Router>
