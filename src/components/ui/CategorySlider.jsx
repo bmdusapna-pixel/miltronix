@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { useNavigate } from "react-router-dom";
 import { fetchCategories } from "../../api/api";
 
-const BACKEND_URL = "http://localhost:3000";
+const BACKEND_URL = "https://miltronix-backend-1.onrender.com";
 
 function CategorySlider() {
   const navigate = useNavigate();
