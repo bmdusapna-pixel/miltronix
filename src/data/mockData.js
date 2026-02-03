@@ -348,7 +348,7 @@ export const customerReviews = [
 
 export const subscriptionFeatures = [
   {
-    icon: "/src/assets/icon 15.svg",
+    icon: "/src/assets/icon15.svg",
     alt: "Tag Icon",
     title: "Exclusive Deals",
     description: "Get access to subscriber-only discounts and flash sales",
