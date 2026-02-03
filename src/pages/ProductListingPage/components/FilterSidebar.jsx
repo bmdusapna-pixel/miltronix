@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BACKEND_URL = "https://miltronix-backend-1.onrender.com";
 
 const FilterSidebar = ({ categoryId, filters, products, setProducts }) => {
   const [options, setOptions] = useState(filters || null);

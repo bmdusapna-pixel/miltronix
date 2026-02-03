@@ -2,7 +2,7 @@
 import axios, { AxiosInstance } from "axios";
 
 // ---------------- BASE URL ----------------
-const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3000/api";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 // ---------------- AXIOS INSTANCE ----------------
 const API: AxiosInstance = axios.create({

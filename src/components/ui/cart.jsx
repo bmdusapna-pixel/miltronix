@@ -3,7 +3,7 @@ import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import { getCartItems, updateCartItem, removeCartItem } from "../../api/api";
 
-const BACKEND_URL = "http://localhost:3000";
+const BACKEND_URL = "https://miltronix-backend-1.onrender.com";
 
 const Cart = () => {
   const [cart, setCart] = useState({ items: [], subtotal: 0 });

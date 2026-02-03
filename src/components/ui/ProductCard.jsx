@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { addItemToCart, getCartItems } from "../../api/api";
 
-const BACKEND_URL = "http://localhost:3000";
-
+const BACKEND_URL = "https://miltronix-backend-1.onrender.com";
 // Icons
 const starFull = "/assets/icon7.svg";
 const starEmpty = "/assets/icon8.svg";
