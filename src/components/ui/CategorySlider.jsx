@@ -15,7 +15,7 @@ function CategorySlider() {
     const loadCategories = async () => {
       try {
         const cats = await fetchCategories();
-        setCategories(cats);
+        setCategories(Array.isArray(cats) ? cats : []);
       } catch (err) {
         console.error(err);
       } finally {
@@ -46,67 +46,69 @@ function CategorySlider() {
 
   return (
     <>
-      {/* Inline CSS */}
-     <style>{`
-  .category-bg {
-    background: #e5e3e1;
-    padding: 70px 0 25px 0; /* increased top padding */
-  }
+      <style>{`
+        .category-bg {
+          background: #e5e3e1;
+          padding: 70px 0 25px 0;
+        }
 
-  .category-swiper {
-    padding: 10px 0;
-  }
+        .category-swiper {
+          padding: 10px 0;
+        }
 
-  .category-slide {
-    text-align: center;
-    cursor: pointer;
-  }
+        .category-slide {
+          text-align: center;
+          cursor: pointer;
+        }
 
-  .category-circle {
-    width: 110px; /* increased from 90px */
-    height: 110px; /* increased from 90px */
-    margin: auto;
-    border-radius: 50%;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  }
+        // .category-circle {
+        //   width: 100px;
+        //   height: 100px;
+        //   margin: auto;
+        //   border-radius: 50%;
+        //   background: #fff;
+        //   display: flex;
+        //   align-items: center;
+        //   justify-content: center;
+        //   overflow: hidden;
+         
+        //   padding: 10px; /* ✅ image space */
+        // }
 
-  .category-circle:hover {
-    transform: scale(1.05);
-  }
+        .category-circle:hover {
+          transform: scale(1.05);
+          transition: transform 0.3s ease;
+        }
 
-  .category-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-  }
+        /* ✅ IMAGE FIX */
+        .category-img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;   /* 🔥 main fix */
+          object-position: center;
+          border-radius: 50%;
+          display: block;
+        }
 
-  .category-title {
-    margin-top: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #222;
-    text-transform: uppercase;
-  }
+        .category-title {
+          margin-top: 10px;
+          font-size: 14px;
+          font-weight: 600;
+          color: #222;
+          text-transform: uppercase;
+        }
 
-  @media (max-width: 576px) {
-    .category-circle {
-      width: 90px; /* increased from 70px */
-      height: 90px; /* increased from 70px */
-    }
+        @media (max-width: 576px) {
+          .category-circle {
+            width: 90px;
+            height: 90px;
+          }
 
-    .category-title {
-      font-size: 12px;
-    }
-  }
-`}</style>
-
+          .category-title {
+            font-size: 12px;
+          }
+        }
+      `}</style>
 
       <section className="category-bg">
         <div className="container">
@@ -114,9 +116,9 @@ function CategorySlider() {
             slidesPerView={3}
             spaceBetween={20}
             breakpoints={{
-              576: { slidesPerView: 4, spaceBetween: 20 },
-              768: { slidesPerView: 5, spaceBetween: 25 },
-              992: { slidesPerView: 7, spaceBetween: 30 },
+              576: { slidesPerView: 4 },
+              768: { slidesPerView: 5 },
+              992: { slidesPerView: 7 },
             }}
             className="category-swiper"
           >
@@ -130,13 +132,20 @@ function CategorySlider() {
                   <img
                     src={
                       cat.image
-                        ? `${BACKEND_URL}${cat.image}`
+                        ? `${BACKEND_URL}${
+                            cat.image.startsWith("/") ? "" : "/"
+                          }${cat.image}`
                         : "/src/assets/default-category.png"
                     }
                     alt={cat.pageTitle || "category"}
                     className="category-img"
+                    onError={(e) =>
+                      (e.currentTarget.src =
+                        "/src/assets/default-category.png")
+                    }
                   />
                 </div>
+
                 <p className="category-title">{cat.pageTitle}</p>
               </SwiperSlide>
             ))}
