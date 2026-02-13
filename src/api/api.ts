@@ -2,9 +2,7 @@
 import axios, { AxiosInstance, AxiosError } from "axios";
 
 // ---------------- BASE URL ----------------
-const BASE_URL =
-  import.meta.env.VITE_BASE_URL ||
-  "https://miltronix-backend-1.onrender.com/api";
+const BASE_URL =import.meta.env.VITE_BASE_URL || "https://miltronix-backend-1.onrender.com/api";
 
 // ---------------- AXIOS INSTANCE ----------------
 const API: AxiosInstance = axios.create({
