@@ -1,3 +1,4 @@
+// src/pages/ProductListingPage/ProductListingPage.jsx
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -12,7 +13,7 @@ import RecommendationSection from "./components/RecommendationSection";
 import PageHeader from "./components/PageHeader";
 import ResolutionInfo from "./components/ResolutionInfo";
 
-import { fetchCategories } from "../../api/api";
+import { fetchCategories, fetchProducts } from "../../api/api";
 
 const ProductListingPage = () => {
   const { categoryName } = useParams();
@@ -23,11 +24,12 @@ const ProductListingPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const loadCategory = async () => {
+    const loadCategoryAndProducts = async () => {
       try {
         setLoading(true);
         setError(null);
 
+        // 1️⃣ Fetch all categories
         const categories = await fetchCategories();
 
         const category = categories.find(
@@ -42,16 +44,19 @@ const ProductListingPage = () => {
         }
 
         setPageData(category);
-        setProducts(category.products || []);
+
+        // 2️⃣ Fetch products for this category from backend
+        const productsData = await fetchProducts({ categoryKey: category.categoryKey });
+        setProducts(productsData.products || productsData || []);
       } catch (err) {
         console.error(err);
-        setError("Failed to load category");
+        setError("Failed to load category or products");
       } finally {
         setLoading(false);
       }
     };
 
-    loadCategory();
+    loadCategoryAndProducts();
   }, [categoryName]);
 
   if (loading) {
