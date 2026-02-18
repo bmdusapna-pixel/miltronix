@@ -6,7 +6,13 @@ const starIconFull = "/src/assets/icon 7.svg";
 const starIconHalf = "/src/assets/icon 9.svg";
 const starIconEmpty = "/src/assets/icon 8.svg";
 
-const ShopCard = ({ product, userId, onCartUpdate, onWishlistUpdate }) => {
+const ShopCard = ({
+  product,
+  userId,
+  onCartUpdate,
+  onWishlistUpdate,
+  onRemove // 👈 NEW PROP
+}) => {
   const [loadingCart, setLoadingCart] = useState(false);
   const [addedCart, setAddedCart] = useState(false);
 
@@ -17,7 +23,11 @@ const ShopCard = ({ product, userId, onCartUpdate, onWishlistUpdate }) => {
 
   if (!product) return null;
 
+  const resolvedUserId =
+    userId || JSON.parse(localStorage.getItem("user") || "null")?._id || "";
+
   const imageUrl = product.images?.[0]?.url || "/images/placeholder.png";
+
   const categoryName =
     typeof product.category === "object" && product.category
       ? product.category.pageTitle ||
@@ -71,21 +81,63 @@ const ShopCard = ({ product, userId, onCartUpdate, onWishlistUpdate }) => {
   const handleAddToWishlist = async (e) => {
     e.stopPropagation();
 
-    await addItemToWishlist({
-      productId: product._id,
-      title: product.name,
-      images: product.images?.map((img) => img.url),
-      category: categoryName,
-      priceSnapshot: price,
-      variant: variant ? { sku: variant.sku } : undefined,
-    });
-    setAddedWishlist(true);
-    if (onWishlistUpdate) onWishlistUpdate(); // refresh wishlist in parent
+    if (!resolvedUserId) return alert("Please login to add items to wishlist");
+    if (!product._id || !price) return alert("Product not found");
+
+    setLoadingWishlist(true);
+    try {
+      await addItemToWishlist({
+        userId: resolvedUserId,
+        productId: product._id,
+        title: product.name,
+        images: product.images?.map((img) => ({
+          url: img.url,
+          public_id: img.public_id || img.url,
+          alt: img.alt || product.name || "",
+        })),
+        category: categoryName,
+        priceSnapshot: price,
+        variant: variant ? { sku: variant.sku } : undefined,
+      });
+
+      setAddedWishlist(true);
+      if (onWishlistUpdate) onWishlistUpdate();
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Failed to add to wishlist");
+      setAddedWishlist(false);
+    } finally {
+      setLoadingWishlist(false);
+    }
   };
 
   return (
     <div className="col-md-6 col-lg-4">
-      <div className="shop-card text-center">
+      <div className="shop-card text-center position-relative">
+
+        {/* ✅ REMOVE BUTTON (only in wishlist page) */}
+        {onRemove && (
+          <button
+            onClick={onRemove}
+            title="Remove from wishlist"
+            style={{
+              position: "absolute",
+              top: "10px",
+              right: "10px",
+              zIndex: 10,
+              background: "white",
+              border: "none",
+              borderRadius: "50%",
+              width: "32px",
+              height: "32px",
+              cursor: "pointer",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
+            }}
+          >
+            ❌
+          </button>
+        )}
+
         {saveAmount > 0 && (
           <span className="shop-card-badge">
             Save ₹{saveAmount.toLocaleString()}
@@ -111,28 +163,20 @@ const ShopCard = ({ product, userId, onCartUpdate, onWishlistUpdate }) => {
 
         <p className="product-price2">₹{price.toLocaleString()}</p>
         {oldPrice > price && (
-          <p className="product-old-price2">₹{oldPrice.toLocaleString()}</p>
+          <p className="product-old-price2">
+            ₹{oldPrice.toLocaleString()}
+          </p>
         )}
 
         <div className="product-rating1">
           {[...Array(fullStars)].map((_, i) => (
-            <img
-              key={`full-${i}`}
-              src={starIconFull}
-              alt="star"
-              className="star1"
-            />
+            <img key={`full-${i}`} src={starIconFull} alt="star" className="star1" />
           ))}
           {halfStar && (
             <img src={starIconHalf} alt="half-star" className="star1" />
           )}
           {[...Array(emptyStars)].map((_, i) => (
-            <img
-              key={`empty-${i}`}
-              src={starIconEmpty}
-              alt="star"
-              className="star1"
-            />
+            <img key={`empty-${i}`} src={starIconEmpty} alt="star" className="star1" />
           ))}
           <span>
             {rating.toFixed(1)} ({reviews})
@@ -145,27 +189,30 @@ const ShopCard = ({ product, userId, onCartUpdate, onWishlistUpdate }) => {
             onClick={handleAddToCart}
             disabled={loadingCart || addedCart || !hasStock}
           >
-            {loadingCart ? (
-              "Adding..."
-            ) : addedCart ? (
-              "Added"
-            ) : !hasStock ? (
-              "Out of Stock"
-            ) : (
-              <>
-                <i className="bi bi-cart"></i> Add to Cart
-              </>
-            )}
+            {loadingCart
+              ? "Adding..."
+              : addedCart
+              ? "Added"
+              : !hasStock
+              ? "Out of Stock"
+              : (
+                <>
+                  <i className="bi bi-cart"></i> Add to Cart
+                </>
+              )}
           </button>
 
-          <button
-            className={`btn shop-card-btn-wishlist ${addedWishlist ? "btn-danger" : ""}`}
-            onClick={handleAddToWishlist}
-            disabled={loadingWishlist || addedWishlist}
-          >
-            <i className="bi bi-heart-fill"></i>
-            {addedWishlist ? " Added" : ""}
-          </button>
+          {/* ❤️ Wishlist button only when NOT remove mode */}
+          {!onRemove && (
+            <button
+              className={`btn shop-card-btn-wishlist ${addedWishlist ? "btn-danger" : ""}`}
+              onClick={handleAddToWishlist}
+              disabled={loadingWishlist || addedWishlist}
+            >
+              <i className="bi bi-heart-fill"></i>
+              {loadingWishlist ? " Adding..." : addedWishlist ? " Added" : ""}
+            </button>
+          )}
         </div>
       </div>
     </div>

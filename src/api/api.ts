@@ -2,8 +2,7 @@ import axios, { AxiosInstance, AxiosError } from "axios";
 
 // ---------------- BASE URL ----------------
 const BASE_URL =
-  import.meta.env.VITE_BASE_URL ||
-  "https://miltronix-backend-2.onrender.com";
+  import.meta.env.VITE_BASE_URL || "https://miltronix-backend-2.onrender.com";
 
 // ---------------- AXIOS INSTANCE ----------------
 const API: AxiosInstance = axios.create({
@@ -22,7 +21,7 @@ API.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // ---------------- RESPONSE INTERCEPTOR ----------------
@@ -34,7 +33,7 @@ API.interceptors.response.use(
       window.location.href = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 // ---------------- ERROR HANDLER ----------------
@@ -59,7 +58,7 @@ export type CartItemType = {
 
 export type CartType = {
   items: Array<{
-    product: any; // can define ProductType if you want
+    product: any;
     variant: { sku: string; attributes?: Record<string, any> };
     quantity: number;
     priceSnapshot: number;
@@ -70,20 +69,23 @@ export type CartType = {
   subtotal: number;
 };
 
-// ================== WISHLIST ==================
+// ================== WISHLIST TYPES ==================
 export type WishlistItemType = {
+  userId: string; // required by controller in req.body
   productId: string;
   variant?: { sku: string; attributes?: Record<string, any> };
   title?: string;
   images?: string[];
   category?: string;
-  priceSnapshot?: number;
+  priceSnapshot: number; // required by controller
 };
 
 export type WishlistType = {
+  _id: string;
+  user: string;
   items: Array<{
     _id: string;
-    product: any; // can define ProductType if you want
+    product: any;
     variant?: { sku: string; attributes?: Record<string, any> };
     title?: string;
     images?: string[];
@@ -249,7 +251,10 @@ export const verifyResetOtp = async (data: { mobile: string; otp: string }) => {
   }
 };
 
-export const resetPassword = async (data: { mobile: string; newPassword: string }) => {
+export const resetPassword = async (data: {
+  mobile: string;
+  newPassword: string;
+}) => {
   try {
     const res = await API.post("/auth/reset-password", data);
     return res.data;
@@ -282,11 +287,14 @@ export const addItemToCart = async (data: CartItemType): Promise<any> => {
     return res.data;
   } catch (error) {
     handleError(error);
-    throw error; // satisfy TS
+    throw error;
   }
 };
 
-export const getCartItems = async (): Promise<{ items: CartItemType[]; subtotal: number }> => {
+export const getCartItems = async (): Promise<{
+  items: CartItemType[];
+  subtotal: number;
+}> => {
   try {
     const res = await API.get("/cart");
     return res.data || { items: [] as CartItemType[], subtotal: 0 };
@@ -296,7 +304,10 @@ export const getCartItems = async (): Promise<{ items: CartItemType[]; subtotal:
   }
 };
 
-export const removeCartItem = async (data: { productId: string; sku?: string }): Promise<any> => {
+export const removeCartItem = async (data: {
+  productId: string;
+  sku?: string;
+}): Promise<any> => {
   if (!data?.productId) throw new Error("productId is required");
 
   try {
@@ -322,7 +333,9 @@ export const clearCart = async (): Promise<any> => {
  * Update cart item quantity explicitly
  * This sets the exact quantity instead of incrementing
  */
-export const updateCartItemQuantity = async (data: CartItemType): Promise<any> => {
+export const updateCartItemQuantity = async (
+  data: CartItemType,
+): Promise<any> => {
   if (!data?.productId || !data?.sku || !data?.quantity)
     throw new Error("productId, sku and quantity are required");
 
@@ -342,24 +355,33 @@ export const getCartCount = async (): Promise<number> => {
   try {
     const cart = await getCartItems();
     const items: CartItemType[] = cart?.items || [];
-    return items.reduce((sum: number, item: CartItemType) => sum + item.quantity, 0);
+    return items.reduce(
+      (sum: number, item: CartItemType) => sum + item.quantity,
+      0,
+    );
   } catch (error) {
     handleError(error);
     throw error;
   }
 };
 
+// ================== WISHLIST ==================
 
 // ---------------- ADD ITEM ----------------
 export const addItemToWishlist = async (data: WishlistItemType) => {
-  if (!data?.productId || !data.priceSnapshot)
-    throw new Error("productId and priceSnapshot are required");
+  if (!data?.userId || !data?.productId || !data?.priceSnapshot)
+    throw new Error("userId, productId and priceSnapshot are required");
 
   try {
     const res = await API.post("/wishlist/items", data);
-    return res.data as { success: boolean; wishlist: WishlistType; message: string };
+    return res.data as {
+      success: boolean;
+      wishlist: WishlistType;
+      message: string;
+    };
   } catch (error) {
     handleError(error);
+    throw error;
   }
 };
 
@@ -372,6 +394,7 @@ export const getUserWishlist = async (userId: string) => {
     return res.data as { success: boolean; wishlist: WishlistType };
   } catch (error) {
     handleError(error);
+    throw error;
   }
 };
 
@@ -381,9 +404,14 @@ export const removeWishlistItem = async (userId: string, itemId: string) => {
 
   try {
     const res = await API.delete(`/wishlist/items/${userId}/${itemId}`);
-    return res.data as { success: boolean; wishlist?: WishlistType; message: string };
+    return res.data as {
+      success: boolean;
+      wishlist?: WishlistType;
+      message: string;
+    };
   } catch (error) {
     handleError(error);
+    throw error;
   }
 };
 
@@ -396,6 +424,7 @@ export const clearUserWishlist = async (userId: string) => {
     return res.data as { success: boolean; message: string };
   } catch (error) {
     handleError(error);
+    throw error;
   }
 };
 

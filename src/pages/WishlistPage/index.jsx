@@ -1,3 +1,4 @@
+// ================= WishlistPage.jsx =================
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/layout/Header';
@@ -11,8 +12,9 @@ const WishlistPage = () => {
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId") || "";
+  const userId = JSON.parse(localStorage.getItem("user") || "null")?._id || "";
 
+  // ---------------- Fetch Wishlist ----------------
   const fetchWishlist = async () => {
     if (!userId) return;
     try {
@@ -20,6 +22,7 @@ const WishlistPage = () => {
       const data = await getUserWishlist(userId);
       setWishlistItems(data?.wishlist?.items || []);
     } catch (err) {
+      setWishlistItems([]);
       console.error("Failed to fetch wishlist:", err);
     } finally {
       setLoading(false);
@@ -30,23 +33,44 @@ const WishlistPage = () => {
     fetchWishlist();
   }, [userId]);
 
+  // ---------------- Remove Item ----------------
   const handleRemoveItem = async (itemId) => {
     if (!userId) return;
     try {
       await removeWishlistItem(userId, itemId);
-      setWishlistItems((currentItems) =>
-        currentItems.filter((item) => item._id !== itemId)
+      setWishlistItems((items) =>
+        items.filter((item) => item._id !== itemId)
       );
     } catch (err) {
-      console.error("Failed to remove item from wishlist:", err);
+      console.error("Failed to remove item:", err);
     }
+  };
+
+  // ---------------- Build product ----------------
+  const buildProduct = (item) => {
+    const base = item.product && typeof item.product === "object" ? item.product : {};
+    return {
+      ...base,
+      _id: base._id || item.product,
+      name: item.title || base.name || "Product",
+      images: item.images?.length > 0 ? item.images : base.images || [],
+      category: item.category || base.category || "Uncategorized",
+      variants: base.variants || [
+        {
+          price: item.priceSnapshot || 0,
+          sku: item.variant?.sku || "",
+          hasStock: true,
+          stockQuantity: 1,
+        },
+      ],
+    };
   };
 
   return (
     <>
       <Header />
       <main style={{ paddingTop: "180px", backgroundColor: "#D5D4D3" }}>
-        <AccountPageLayout 
+        <AccountPageLayout
           pageTitle="Wishlist"
           breadcrumbPath={['Home Page', 'My Account', 'Wishlist']}
         >
@@ -54,29 +78,41 @@ const WishlistPage = () => {
             My Wishlist ({wishlistItems.length})
           </h5>
 
-          {loading ? (
+          {/* ---- Not logged in ---- */}
+          {!userId ? (
+            <p style={{ textAlign: 'center', padding: '2rem' }}>
+              Please{" "}
+              <span
+                style={{ color: '#4e5954', cursor: 'pointer', textDecoration: 'underline' }}
+                onClick={() => navigate("/login")}
+              >
+                login
+              </span>{" "}
+              to view your wishlist.
+            </p>
+
+          ) : loading ? (
             <p>Loading wishlist...</p>
+
           ) : wishlistItems.length > 0 ? (
             <div className="row g-4">
               {wishlistItems.map((item) => (
                 <ShopCard
                   key={item._id}
-                  product={{
-                    ...item.product,
-                    images: item.images || item.product.images,
-                    name: item.title || item.product.name,
-                    category: item.category || item.product.category,
-                  }}
+                  product={buildProduct(item)}
                   variant={item.variant}
                   userId={userId}
-                  wishlistItems={wishlistItems} // pass full wishlist for toggle check
-                  onWishlistUpdate={fetchWishlist} // refresh wishlist dynamically
+                  onRemove={() => handleRemoveItem(item._id)}
                 />
               ))}
             </div>
+
           ) : (
-            <p>Your wishlist is empty.</p>
+            <p style={{ textAlign: 'center', padding: '2rem' }}>
+              Your wishlist is empty.
+            </p>
           )}
+
         </AccountPageLayout>
       </main>
       <Footer />
