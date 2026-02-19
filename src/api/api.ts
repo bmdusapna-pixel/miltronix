@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from "axios";
+import { toast } from "react-toastify";
 
 // ---------------- BASE URL ----------------
 const BASE_URL =
@@ -25,16 +26,23 @@ API.interceptors.request.use(
 );
 
 // ---------------- RESPONSE INTERCEPTOR ----------------
+
+
 API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "/login";
+
+      toast.error("Please login first");
+
+      window.dispatchEvent(new Event("openLoginModal"));
     }
+
     return Promise.reject(error);
   }
 );
+
 
 // ---------------- ERROR HANDLER ----------------
 const handleError = (error: unknown): never => {

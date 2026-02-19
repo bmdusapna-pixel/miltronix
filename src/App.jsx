@@ -53,7 +53,7 @@ function App() {
         <Route path="/secendaddress" element={<SecendAddress />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/pay" element={<Pay />} />
-        // Routes ke andar:
+      
         <Route path="/order-confirm" element={<OrderConfirmPage />} />
       </Routes>
     </Router>
